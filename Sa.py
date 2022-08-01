@@ -2,6 +2,7 @@ import warehouse_ar as wr
 import numpy as np
 import math
 
+
 def objetivo(e,d,l):
     count=0
     g=wr.training(e,d,l)
@@ -11,18 +12,17 @@ def objetivo(e,d,l):
     return g
 
 def S_init():
-    e = 0.7 #the percentage of time when we should take the best action (instead of a random action)
-    d = 0.89 #discount factor for future rewards
-    l = 0.5 #the rate at which the agent should learn
-    return e,d,l
+    e = 0.9 #the percentage of time when we should take the best action (instead of a random action)
+    d = 0.9 #discount factor for future rewards
+    l = 0.9 #the rate at which the agent should learn
+    return [e,d,l]
 
 def SA():
-    alpha =0.90
+    alpha =0.95
     it = 10
     Tf = 1
-    T0 = 10
+    T0 = 5
     s=S_init()
-    print(s)
     valor=objetivo(s[0],s[1],s[2])
     print("Episodios iniciai:", valor)
     
@@ -45,20 +45,21 @@ def SA():
             elif rd == 2:
                 N3(Y)
             yy=objetivo(Y[0],Y[1],Y[2])
-            print(Y)
+            print("Apos operador:",Y)
+            print("OBJ Apos operador:",yy)
             if yy==10:
                 continue
             delta = yy-xx
             if delta <= 0:
-                SOL = Y
+                s = Y
                 xx = yy
             else:
                 rr = (np.random.randint(0,100))/100
                 if rr < math.exp(-delta/T):
-                    SOL = Y
+                    s = Y
                     xx = yy
             if xx < xxb:
-                Xb = SOL
+                Xb = s
                 xxb = xx
             #print(xxb)
         T=alpha*T
@@ -70,18 +71,16 @@ def SA():
 
      
 def N1(s):
-    e,d,l=s
-    j=random_neighbour(e)
-    s=(j,s,l)
-    print(s)
+    j=random_neighbour(s[0])
+    s[0]=j
+    #print(s)
 def N2(s):
-    e,d,l=s
-    j=random_neighbour(d)
-    s=(e,j,l)
+    j=random_neighbour(s[1])
+    s[1]=j
 def N3(s):
-    e,d,l=s
-    j=random_neighbour(l)
-    s=(e,d,j)
+    j=random_neighbour(s[2])
+    s[2]=j
+
 
 def random_neighbour(x, fraction=1):
     """Move a little bit x, from the left or the right."""

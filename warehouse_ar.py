@@ -100,12 +100,39 @@ def get_shortest_path(start_row_index, start_column_index):
       count+=1
     return shortest_path
 
+def clear():
 
-#run through 1000 training episodes
+  environment_rows = 11
+  environment_columns = 11
+
+  q_values = np.zeros((environment_rows, environment_columns, 4))
+
+
+  actions = ['up', 'right', 'down', 'left']
+
+  rewards = np.full((environment_rows, environment_columns), -100.)
+  rewards[0, 5] = 100. #set the reward for the packaging area (i.e., the goal) to 100
+  
+  aisles = {} #store locations in a dictionary
+  aisles[1] = [i for i in range(1, 10)]
+  aisles[2] = [1, 7, 9]
+  aisles[3] = [i for i in range(1, 8)]
+  aisles[3].append(9)
+  aisles[4] = [3, 7]
+  aisles[5] = [i for i in range(11)]
+  aisles[6] = [5]
+  aisles[7] = [i for i in range(1, 10)]
+  aisles[8] = [3, 7]
+  aisles[9] = [i for i in range(11)]
+
+  for row_index in range(1, 10):
+    for column_index in aisles[row_index]:
+      rewards[row_index, column_index] = -1.
+
 def training(epsilon,discount_factor,learning_rate):
 
   for eps in range(10,1000):
-
+    clear()
     for episode in range(eps):
       #get the starting location for this episode
       row_index, column_index = get_starting_location()
@@ -138,7 +165,7 @@ def training(epsilon,discount_factor,learning_rate):
       for j in range(11):
        if get_shortest_path(i, j)== False:
         falso.append(1)
-    print(".")    
+    #print(".")    
     if len(falso)==0:
       return eps
    
